@@ -12,6 +12,11 @@ class Init {
     return this;
   }
 
+  async start(){
+    await this.initUsersAdmin();
+    await this.initUsers();
+  }
+
   async initUsersAdmin() {
     const type = 'user';
     if (!this.data['user-admin']) {
@@ -101,11 +106,6 @@ class Init {
       }
     }
     return this.data[type];
-  }
-
-  async start(){
-    await this.initUsersAdmin();
-    await this.initUsers();
   }
 }
 

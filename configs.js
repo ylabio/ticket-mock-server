@@ -8,7 +8,7 @@ module.exports = {
     host: 'localhost',
     port: 8160,
     routers: require('./routers'),
-    log: false,
+    log: true,
     // Кроссдоменные запросы
     cors: {
       /**

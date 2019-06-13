@@ -3,9 +3,9 @@ const Init = require('../init');
 
 class InitExample extends Init{
 
-
   async start(){
-    await super.start()
+    await super.start();
+
   }
 }
 

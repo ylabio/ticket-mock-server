@@ -1,4 +1,4 @@
-const ObjectID = require('mongodb').ObjectID;
+const ObjectID = require('exser').ObjectID;
 const {errors, queryUtils} = require('exser').utils;
 
 /**
@@ -12,7 +12,7 @@ module.exports = async (router, services) => {
   const spec = await services.getSpec();
   const storage = await services.getStorage();
   /** @type {User} */
-  //const userStore = storage.get('user');
+  const userStore = storage.get('user');
   /**
    * Инициализация сессии запроса
    * - Аутентификация запроса по токену
@@ -24,15 +24,15 @@ module.exports = async (router, services) => {
     };
     try {
       let token = req.get('X-Token');
-      // let auth = await userStore.auth({token, fields: 'token,user(*)'});
-      // if (auth) {
-      //   req.session.user = auth.user;
-      //   req.session.token = auth.token;
-      //   req.session.logEntryId = `log:${new ObjectID().toString()}`;
-      //   if (auth.user.lang && !(req.query.lang || req.get('X-Lang'))) {
-      //     req.session.acceptLang = auth.user.lang;
-      //   }
-      // }
+      let auth = await userStore.auth({token, fields: 'token,user(*)'});
+      if (auth) {
+        req.session.user = auth.user;
+        req.session.token = auth.token;
+        req.session.logEntryId = `log:${new ObjectID().toString()}`;
+        if (auth.user.lang && !(req.query.lang || req.get('X-Lang'))) {
+          req.session.acceptLang = auth.user.lang;
+        }
+      }
       next();
     } catch (e) {
       if (e instanceof errors.NotFound) {

@@ -1,6 +1,7 @@
 const Model = require('exser').Model;
 const {errors, stringUtils} = require('exser').utils;
 const moment = require('moment');
+const ObjectID = require('exser').ObjectID;
 
 class User extends Model {
 
