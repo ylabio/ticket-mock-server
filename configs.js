@@ -26,7 +26,7 @@ module.exports = {
   storage: {
     db: {
       url: `mongodb://${process.env.MONGO_HOST || 'localhost'}:${process.env.MONGO_PORT || '27017'}`,
-      name: 'roads'
+      name: 'ticket-mock'
     },
 
     models: require('./models'),
@@ -36,7 +36,7 @@ module.exports = {
         length: 8,
         chars: 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM123456678990-!=+&$#'
       },
-      authUrl: 'http://roads.ylab.io'
+      authUrl: 'http://ticket-mock.ylab.io'
     },
 
     file: {
@@ -75,8 +75,8 @@ module.exports = {
   spec: {
     default: {
       info: {
-        title: 'Roads',
-        description: 'Roads REST API',
+        title: 'Ticket Mock Server',
+        description: 'Ticket mock REST API',
         termsOfService: '',//url
         // contact: {
         // name: 'API Support',
