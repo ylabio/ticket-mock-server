@@ -14,5 +14,5 @@ API docs: http://localhost:8160/api/v1/docs
 
 
 ## Тестовый пользователь
-login: test@example.com<br/>
+login: test<br/>
 password: 123456
