@@ -15,6 +15,7 @@ class Init {
   async start(){
     await this.initUsersAdmin();
     await this.initUsers();
+    await this.initTickets();
   }
 
   async initUsersAdmin() {
@@ -102,6 +103,31 @@ class Init {
           filter: {_key: body._key},
           body,
           session
+        })));
+      }
+    }
+    return this.data[type];
+  }
+
+  async initTickets() {
+    const type = 'ticket';
+    if (!this.data[type]) {
+      const session = await this.initSession();
+      const imageUrl = 'https://picsum.photos/id'; // 'https://picsum.photos/id/1/640/480'
+      this.data[type] = [];
+      for (let i = 0; i < 100; i++) {
+        const key = i + 1;
+        const body = {
+          _key: `ticket${key}`,
+          title: `Ticket #${key}`,
+          content: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',
+          image: {url: `https://picsum.photos/id/${key}/640/480`},
+          isBookmark: false,
+        };
+        this.data[type].push(objectUtils.merge(body, await this.s.storage.get(type).upsertOne({
+          filter: {_key: body._key},
+          body,
+          session,
         })));
       }
     }

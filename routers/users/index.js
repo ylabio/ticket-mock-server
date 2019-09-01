@@ -292,86 +292,86 @@ module.exports = async (router, services) => {
   /**
    *
    */
-  router.put('/users/:id', {
-    operationId: 'users.update',
-    summary: 'Редактирование',
-    description: 'Измненение свойств пользователя. Доступно владельцу профиля и админу',
-    tags: ['Users'],
-    session: spec.generate('session.user', ['user']),
-    requestBody: {
-      content: {
-        'application/json': {schema: {$ref: '#/components/schemas/user.update'}}
-      }
-    },
-    parameters: [
-      {
-        in: 'path',
-        name: 'id',
-        schema: {type: 'string', minLength: 24, maxLength: 24},
-        description: 'Идентификатор пользователя'
-      },
-      {
-        in: 'query',
-        name: 'fields',
-        description: 'Выбираемые поля по пользователю',
-        schema: {type: 'string'}, example: '_id,profile(name)'
-      },
-    ],
-    responses: {
-      200: spec.generate('success', {$ref: '#/components/schemas/user.view'}),
-      400: spec.generate('error', 'Bad Request', 400),
-      404: spec.generate('error', 'Not Found', 404)
-    }
-  }, async (req/*, res*/) => {
-
-    const user = await users.getOne({filter: new ObjectID(req.params.id), session: req.session});
-
-    return await storage.get(user._type, 'user').updateOne({
-      id: req.params.id,
-      body: req.body,
-      session: req.session,
-      fields: queryUtils.parseFields(req.query.fields)
-    });
-  });
+  // router.put('/users/:id', {
+  //   operationId: 'users.update',
+  //   summary: 'Редактирование',
+  //   description: 'Измненение свойств пользователя. Доступно владельцу профиля и админу',
+  //   tags: ['Users'],
+  //   session: spec.generate('session.user', ['user']),
+  //   requestBody: {
+  //     content: {
+  //       'application/json': {schema: {$ref: '#/components/schemas/user.update'}}
+  //     }
+  //   },
+  //   parameters: [
+  //     {
+  //       in: 'path',
+  //       name: 'id',
+  //       schema: {type: 'string', minLength: 24, maxLength: 24},
+  //       description: 'Идентификатор пользователя'
+  //     },
+  //     {
+  //       in: 'query',
+  //       name: 'fields',
+  //       description: 'Выбираемые поля по пользователю',
+  //       schema: {type: 'string'}, example: '_id,profile(name)'
+  //     },
+  //   ],
+  //   responses: {
+  //     200: spec.generate('success', {$ref: '#/components/schemas/user.view'}),
+  //     400: spec.generate('error', 'Bad Request', 400),
+  //     404: spec.generate('error', 'Not Found', 404)
+  //   }
+  // }, async (req/*, res*/) => {
+  //
+  //   const user = await users.getOne({filter: new ObjectID(req.params.id), session: req.session});
+  //
+  //   return await storage.get(user._type, 'user').updateOne({
+  //     id: req.params.id,
+  //     body: req.body,
+  //     session: req.session,
+  //     fields: queryUtils.parseFields(req.query.fields)
+  //   });
+  // });
 
   /**
    *
    */
-  router.delete('/users/:id', {
-    operationId: 'users.delete',
-    summary: 'Удаление',
-    description: 'Удаляется учётная запись. Помечается признаком isDeleted',
-    tags: ['Users'],
-    session: spec.generate('session.user', ['user']),
-    parameters: [
-      {
-        in: 'path',
-        name: 'id',
-        schema: {type: 'string', minLength: 24, maxLength: 24},
-        description: 'Идентификатор пользователя'
-      },
-      // {
-      //   in: 'query',
-      //   name: 'fields',
-      //   description: 'Выбираемые поля',
-      //   schema: {type: 'string'},
-      //   example: '_id,email,type,profile(name)'
-      // }
-    ],
-    responses: {
-      200: spec.generate('success', true),
-      404: spec.generate('error', 'Not Found', 404)
-    }
-  }, async (req/*, res*/) => {
-
-    const user = await users.getOne({filter: new ObjectID(req.params.id), session: req.session});
-
-    return await storage.get(user._type, 'user').deleteOne({
-      id: req.params.id,
-      session: req.session,
-      //fields: queryUtils.parseFields(req.query.fields)
-    });
-  });
+  // router.delete('/users/:id', {
+  //   operationId: 'users.delete',
+  //   summary: 'Удаление',
+  //   description: 'Удаляется учётная запись. Помечается признаком isDeleted',
+  //   tags: ['Users'],
+  //   session: spec.generate('session.user', ['user']),
+  //   parameters: [
+  //     {
+  //       in: 'path',
+  //       name: 'id',
+  //       schema: {type: 'string', minLength: 24, maxLength: 24},
+  //       description: 'Идентификатор пользователя'
+  //     },
+  //     // {
+  //     //   in: 'query',
+  //     //   name: 'fields',
+  //     //   description: 'Выбираемые поля',
+  //     //   schema: {type: 'string'},
+  //     //   example: '_id,email,type,profile(name)'
+  //     // }
+  //   ],
+  //   responses: {
+  //     200: spec.generate('success', true),
+  //     404: spec.generate('error', 'Not Found', 404)
+  //   }
+  // }, async (req/*, res*/) => {
+  //
+  //   const user = await users.getOne({filter: new ObjectID(req.params.id), session: req.session});
+  //
+  //   return await storage.get(user._type, 'user').deleteOne({
+  //     id: req.params.id,
+  //     session: req.session,
+  //     //fields: queryUtils.parseFields(req.query.fields)
+  //   });
+  // });
 
   router.put('/users/:id/password', {
     operationId: 'users.password',
