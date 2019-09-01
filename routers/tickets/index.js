@@ -7,9 +7,6 @@ module.exports = async (router, services) => {
   /** @type {Ticket} */
   const tickets = storage.get('ticket');
 
-  /**
-   *
-   */
   router.post('/tickets', {
     operationId: 'tickets.create',
     summary: 'Создание',
@@ -42,13 +39,10 @@ module.exports = async (router, services) => {
     });
   });
 
-  /**
-   *
-   */
   router.get('/tickets', {
     operationId: 'tickets.list',
     summary: 'Выбор списка (поиск)',
-    description: 'Список ролей с фильтром',
+    description: 'Список тикетов с фильтром',
     tags: ['Tickets'],
     session: spec.generate('session.user', ['user']),
     parameters: [
@@ -66,7 +60,7 @@ module.exports = async (router, services) => {
         name: 'fields',
         description: 'Выбираемые поля',
         schema: {type: 'string'},
-        example: '_id,name,title'
+        example: '_id,title,content,image(url)'
       },
       {
         in: 'query',
@@ -109,17 +103,96 @@ module.exports = async (router, services) => {
     }
   });
 
-  router.put('/tickets/:id', {
-    operationId: 'tickets.update',
-    summary: 'Редактирование',
-    description: 'Изменение тикета',
+  router.get('/tickets/:id', {
+    operationId: 'tickets.one',
+    summary: 'Выбор одного',
+    description: 'Тикет по идентификатору.',
     tags: ['Tickets'],
     session: spec.generate('session.user', ['user']),
-    requestBody: {
-      content: {
-        'application/json': {schema: {$ref: '#/components/schemas/ticket.update'}}
+    parameters: [
+      {
+        in: 'path',
+        name: 'id',
+        schema: {type: 'string'},
+        description: 'Идентификатор тикета'
+      },
+      {
+        in: 'query',
+        name: 'fields',
+        description: 'Выбираемые поля',
+        schema: {type: 'string'}, example: '_id,title,content,image(url)'
       }
-    },
+    ],
+    responses: {
+      200: spec.generate('success', {$ref: '#/components/schemas/user.view'}),
+      404: spec.generate('error', 'Not Found', 404)
+    }
+  }, async (req) => {
+
+    if (!req.params.id) {
+      throw new errors.NotFound();
+    }
+
+    const filter = queryUtils.formattingSearch({
+      _id: req.params.id,
+    }, {
+      _id: {kind: 'ObjectId'},
+    });
+
+    return await tickets.getOne({
+      filter,
+      session: req.session,
+      fields: queryUtils.parseFields(req.query.fields)
+    });
+
+  });
+
+  // router.put('/tickets/:id', {
+  //   operationId: 'tickets.update',
+  //   summary: 'Редактирование',
+  //   description: 'Изменение тикета',
+  //   tags: ['Tickets'],
+  //   session: spec.generate('session.user', ['user']),
+  //   requestBody: {
+  //     content: {
+  //       'application/json': {schema: {$ref: '#/components/schemas/ticket.update'}}
+  //     }
+  //   },
+  //   parameters: [
+  //     {
+  //       in: 'path',
+  //       name: 'id',
+  //       description: 'id тикета',
+  //       schema: {type: 'string'}
+  //     },
+  //     {
+  //       in: 'query',
+  //       name: 'fields',
+  //       description: 'Выбираемые поля',
+  //       schema: {type: 'string'},
+  //       example: '*'
+  //     }
+  //   ],
+  //   responses: {
+  //     200: spec.generate('success', {$ref: '#/components/schemas/ticket.view'}),
+  //     404: spec.generate('error', 'Not Found', 404)
+  //   }
+  // }, async (req) => {
+  //
+  //   return await tickets.updateOne({
+  //     id: req.params.id,
+  //     body: req.body,
+  //     session: req.session,
+  //     fields: queryUtils.parseFields(req.query.fields)
+  //   });
+  // });
+
+  router.put('/tickets/:id/bookmark', {
+    operationId: 'tickets.bookmark',
+    summary: 'Добавить в избранное',
+    description: 'Пометить тикет, как избранный',
+    tags: ['Tickets'],
+    session: spec.generate('session.user', ['user']),
     parameters: [
       {
         in: 'path',
@@ -143,10 +216,39 @@ module.exports = async (router, services) => {
 
     return await tickets.updateOne({
       id: req.params.id,
-      body: req.body,
+      body: {isBookmark: true},
       session: req.session,
       fields: queryUtils.parseFields(req.query.fields)
     });
+  });
+
+  router.delete('/tickets/:id/bookmark', {
+    operationId: 'tickets.delete',
+    summary: 'Убрать из избранного',
+    description: 'Убрать пометку избранности у тикета',
+    session: spec.generate('session.user', ['user']),
+    tags: ['Tickets'],
+    parameters: [
+      {
+        in: 'path',
+        name: 'id',
+        description: 'Идентификатор тикета',
+        schema: {type: 'string'}
+      },
+    ],
+    responses: {
+      200: spec.generate('success', true),
+      404: spec.generate('error', 'Not Found', 404)
+    }
+  }, async (req) => {
+
+    await tickets.updateOne({
+      id: req.params.id,
+      body: {isBookmark: false},
+      session: req.session,
+    });
+
+    return true;
   });
 
   // router.delete('/tickets/:id', {
