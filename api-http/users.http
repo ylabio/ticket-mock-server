@@ -50,3 +50,10 @@ Content-Type: application/json
 X-Token: {{tokenAdmin}}
 
 ###
+# Logout
+
+DELETE {{baseUrl}}/users/sign
+Content-Type: application/json
+X-Token: {{tokenAdmin}}
+
+###
