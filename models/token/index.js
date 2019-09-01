@@ -81,6 +81,25 @@ class Token extends exser.Model {
       }
     });
   }
+
+  async removeByToken({token, session}) {
+    const object = await this.native.findOne({
+      value: token
+    });
+
+    if (!object) {
+      throw new errors.NotFound({}, 'Token not found');
+    }
+
+    await super.updateOne({
+      id: object._id,
+      body: {isDeleted: true},
+      session,
+      schema: 'delete',
+    });
+
+    return true;
+  }
 }
 
 module.exports = Token;
