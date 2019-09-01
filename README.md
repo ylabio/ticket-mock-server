@@ -1,5 +1,5 @@
 # Ticket Mock Server
-Тестовый api mock-сервер на основе Exser (node.js).
+Тестовый api mock-сервер на основе [Exser](https://github.com/ylabio/exser) (node.js).
 
 ## Основное назначение
 Написание и тестирование скелетонов frontend приложений на React (Javascript) и Flutter (Dart). 
