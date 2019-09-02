@@ -83,13 +83,10 @@ class Token extends exser.Model {
   }
 
   async removeByToken({token, session}) {
-    const object = await this.native.findOne({
-      value: token
+    const object = await super.getOne({
+      filter: {value: token},
+      session,
     });
-
-    if (!object) {
-      throw new errors.NotFound({}, 'Token not found');
-    }
 
     await super.updateOne({
       id: object._id,
