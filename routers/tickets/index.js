@@ -1,4 +1,5 @@
 const {queryUtils, errors} = require('exser').utils;
+const sleep = require('../../utils/sleep');
 
 module.exports = async (router, services) => {
 
@@ -78,6 +79,9 @@ module.exports = async (router, services) => {
       })
     }
   }, async (req) => {
+
+    await sleep(500);
+
     const filter = queryUtils.formattingSearch(req.query.search, {
       query: {kind: 'regex', fields: ['name','title.ru', 'title.en']}
     });
@@ -214,6 +218,8 @@ module.exports = async (router, services) => {
     }
   }, async (req) => {
 
+    await sleep(300);
+
     return await tickets.updateOne({
       id: req.params.id,
       body: {isBookmark: true},
@@ -241,6 +247,8 @@ module.exports = async (router, services) => {
       404: spec.generate('error', 'Not Found', 404)
     }
   }, async (req) => {
+
+    await sleep(300);
 
     await tickets.updateOne({
       id: req.params.id,
